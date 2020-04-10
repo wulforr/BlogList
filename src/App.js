@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginHandler from './services/login'
+import './App.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,12 +12,15 @@ const App = () => {
   const [title,setTitle] = useState('')
   const [author,setAuthor] = useState('')
   const [url,setUrl] = useState('')
+  const [errMessage,setErrMessage] = useState(null)
+  const [successMessage,setSuccessMessage] = useState(null)
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser')
     if(loggedUser){
       const user = JSON.parse(loggedUser)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -42,13 +46,20 @@ const App = () => {
       setPassword('')
     }
     catch(e){
-      console.log(e)
+      setErrMessage('Username or Password is incorrect')
+      setTimeout(() => {
+        setErrMessage(null)
+      }, 5000);
     }
   }
 
   const handleLogout = () => {
     window.localStorage.clear()
     setUser(null)
+    setSuccessMessage('logged Out successfully')
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000);
   }
   const loginDiv = () => {
     return(
@@ -72,11 +83,19 @@ const App = () => {
     try{
       const newBlog = await blogService.addBlog(blogInfo)
       console.log(newBlog)
+      setSuccessMessage(`new Blog ${newBlog.title} by ${newBlog.author} added`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000);
+      setTitle('')
+      setAuthor('')
+      setUrl('')
       const blogs = await blogService.getAll()
       setBlogs(blogs)
     }
     catch(e){
       console.log(e)
+      setErrMessage('There was some problem adding the blog')
     }
 
   }
@@ -116,6 +135,8 @@ const App = () => {
 
   return (
     <div>
+      {errMessage && <div className='errMessage' >{errMessage}</div>}
+      {successMessage && <div className='successMessage' >{successMessage}</div>}
       {User ? blogDiv() : loginDiv()}
     </div>
   )
