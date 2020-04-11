@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
-const Blog = ({ blog, blogs, setBlogs }) => {
+const Blog = ({ blog, blogs, setBlogs, setErrMessage, setSuccessMessage }) => {
 
   const [visible,setVisible] = useState(false)
   const blogStyle = {
@@ -24,10 +24,36 @@ const Blog = ({ blog, blogs, setBlogs }) => {
       })
       newBlogs.sort((a,b) => b.likes-a.likes)
       setBlogs(newBlogs)
+      setSuccessMessage('updated Successfully')
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000);
     }
     catch(e){
-      console.log(e)
+      setErrMessage(`Updatinf failed cause ${e}`)
+      setTimeout(() => {
+        setErrMessage(null)
+      }, 5000);
     }
+  }
+
+  const deleteBlog = async () => {
+    try{
+      const res = await blogService.deleteBlog(blog.id)
+      console.log(res)
+      const newBlogs = blogs.filter((ele) => ele.id !== blog.id )
+      setBlogs(newBlogs)
+      setSuccessMessage('Deleted Successfully')
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000);
+    }
+    catch(e){
+      setErrMessage(`Updatinf failed cause ${e}`)
+      console.log(e)
+      setTimeout(() => {
+        setErrMessage(null)
+      }, 5000);    }
   }
 
   return(
@@ -47,6 +73,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
         <p>
           {blog.url}
         </p>
+        <button style = {{backgroundColor:'blue',padding:'5px 10px',color:'white'}} onClick={deleteBlog} >Delete</button>
         </div>}
         
     </div>
