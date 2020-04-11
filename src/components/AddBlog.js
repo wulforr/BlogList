@@ -1,8 +1,8 @@
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
 
-const AddBlog = ({setSuccessMessage, setErrMessage, setBlogs, blogs, blogFromRef }) => {
+const AddBlog = ({ setSuccessMessage, setErrMessage, setBlogs, blogs, blogFromRef }) => {
     const [title,setTitle] = useState('')
     const [author,setAuthor] = useState('')
     const [url,setUrl] = useState('')
