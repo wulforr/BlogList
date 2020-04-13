@@ -27,7 +27,6 @@ const AddBlog = ({ setSuccessMessage, setErrMessage, setBlogs, blogs, blogFromRe
           console.log(e)
           setErrMessage('There was some problem adding the blog')
         }
-    
       }
     
 
